@@ -6,6 +6,11 @@ function getPost(id) {
 
   async function load() {
     try {
+      //simulate delay
+      await new Promise((resolve) => {
+        setTimeout(resolve, 2000);
+      });
+      //continue block
       let data = await fetch(`http://localhost:3000/posts/${id}`);
       if (data.ok) {
         console.log("Successfully retrieved JSON from endpoint.");
@@ -22,4 +27,4 @@ function getPost(id) {
   return { post, error, load };
 }
 
-export default getPost
+export default getPost;
