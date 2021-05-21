@@ -1,9 +1,11 @@
 <template>
   <div class="home">
     <h1>Home</h1>
-    <PostList :posts="posts" v-if="showPosts" />
-    <button @click="showPosts = !showPosts">Toggle Posts</button>
-    <button @click="posts.pop()">Delete a post</button>
+    <div v-if="error">{{ error }}</div>
+    <div v-if="posts.length">
+      <PostList :posts="posts" />
+    </div>
+    <div v-else>Loading...</div>
   </div>
 </template>
 
@@ -17,19 +19,29 @@ export default {
     PostList,
   },
   setup() {
-    const posts = ref([
-      {
-        title: "Welcome to the blog",
-        body:
-          "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?",
-        id: 1,
-      },
-      { title: "Top 5 css tips", body: "lorem ipsum", id: 2 },
-    ]);
+    const posts = ref([]);
+    const error = ref(null);
 
-    const showPosts = ref(true)
+    async function load() {
+      try {
+        let data = await fetch("http://localhost:3000/posts");
+        if (data.ok) {
+          console.log("Successfully retrieved JSON from endpoint.");
+        } else if (!data.ok) {
+          throw new Error(
+            "Please ensure json-server is watching the correct directory, otherwise please check the endpoint and try again."
+          );
+        }
+        posts.value = await data.json();
+      } catch (err) {
+        error.value = err;
+        console.warn(error.value);
+      }
+    }
 
-    return { posts, showPosts };
+    load();
+
+    return { posts, error };
   },
 };
 </script>
