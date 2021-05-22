@@ -1,4 +1,5 @@
 import { ref } from "@vue/reactivity";
+import { projectFirestore } from "../firebase/config";
 
 function getPosts() {
   const posts = ref([]);
@@ -6,20 +7,13 @@ function getPosts() {
 
   async function load() {
     try {
-      //simulate delay (for testing purposes)
-      /*  await new Promise((resolve) => {
-        setTimeout(resolve, 2000);
-      }); */
-      //continue block
-      let data = await fetch("http://localhost:3000/posts");
-      if (data.ok) {
-        console.log("Successfully retrieved JSON from endpoint.");
-      } else if (!data.ok) {
-        throw new Error(
-          "Please ensure json-server is watching the correct directory, otherwise please check the endpoint and try again."
-        );
-      }
-      posts.value = await data.json();
+      const response = await projectFirestore.collection("posts").get();
+      posts.value = response.docs.map((doc) => {
+        return {
+          ...doc.data(),
+          id: doc.id,
+        };
+      });
     } catch (err) {
       error.value = err;
       console.warn(error.value);
