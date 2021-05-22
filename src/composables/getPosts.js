@@ -6,10 +6,10 @@ function getPosts() {
 
   async function load() {
     try {
-      //simulate delay
-      await new Promise((resolve) => {
+      //simulate delay (for testing purposes)
+      /*  await new Promise((resolve) => {
         setTimeout(resolve, 2000);
-      });
+      }); */
       //continue block
       let data = await fetch("http://localhost:3000/posts");
       if (data.ok) {
