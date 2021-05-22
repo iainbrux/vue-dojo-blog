@@ -1,6 +1,6 @@
 <template>
   <div class="create">
-    <form>
+    <form @submit.prevent="postPost">
       <label>Title:</label>
       <input v-model="title" type="text" required />
       <label>Content</label>
@@ -22,6 +22,24 @@ export default {
     const tag = ref("");
     const tags = ref([]);
 
+    async function postPost() {
+      let post = {
+        title: title.value,
+        body: body.value,
+        tags: tags.value,
+      };
+      try {
+        await fetch("http://localhost:3000/posts", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(post),
+        })
+      } catch (error) {
+        console.error(error);
+      }
+
+    }
+
     function handleKeydown() {
       if (!tags.value.includes(tag.value)) {
         tag.value = tag.value.replace(/\s/, ""); // removes all whitespace
@@ -36,6 +54,7 @@ export default {
       tag,
       handleKeydown,
       tags,
+      postPost
     };
   },
 };
