@@ -16,6 +16,7 @@
 <script>
 import { ref } from "@vue/reactivity";
 import { useRouter } from "vue-router";
+import { projectFirestore } from '../firebase/config';
 
 export default {
   setup() {
@@ -33,12 +34,8 @@ export default {
         tags: tags.value,
       };
       try {
-        await fetch("http://localhost:3000/posts", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(post),
-        });
-        router.push({ name: "Home" });
+        await projectFirestore.collection('posts').add(post);
+        router.push({ name: 'Home' })
       } catch (error) {
         console.error(error);
       }
