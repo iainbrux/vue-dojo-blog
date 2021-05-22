@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/Home.vue'
 import Details from '../views/Details.vue'
 import Create from '../views/Create.vue'
+import RealTime from '../views/RealTime.vue'
 import Tag from '../views/Tag.vue'
 
 const routes = [
@@ -26,6 +27,11 @@ const routes = [
     name: 'Tag',
     component: Tag,
     props: true,
+  },
+  {
+    path: '/realtime',
+    name: 'RealTime',
+    component: RealTime
   }
 ]
 
